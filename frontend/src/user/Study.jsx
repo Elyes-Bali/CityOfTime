@@ -646,7 +646,7 @@ const Study = () => {
               <Clock size={60} className="text-white" />
             </div>
             <span className="text-5xl font-black text-blue-900 block">
-              مغامرة الزمن مع كابتن زمن
+               مغامرة الزمن
             </span>
           </div>
           <p className="text-blue-500 font-black text-3xl">
