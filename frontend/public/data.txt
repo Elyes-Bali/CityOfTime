@@ -9,8 +9,8 @@ MAILTRAP_ENDPOINT=https://send.api.mailtrap.io/
 
 CLIENT_URL=http://localhost:5173/reser-password
 
-GMAIL_USER=
-GMAIL_PASS=
+GMAIL_USER=dhahrimalek049@gmail.com
+GMAIL_PASS=bwscoxwublmkclwk
 
 CLIENT_URL=http://localhost:5173
 STRIPE_WEBHOOK_SECRET=whsec_AaF35WzQob1UM3YZHx9CWsJJxTFNNMDT
