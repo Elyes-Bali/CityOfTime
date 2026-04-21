@@ -472,21 +472,22 @@ const EquationGame = () => {
               الصفحة الرئيسية
             </a>
             {types.map((type) => {
-              const unlocked = type === "clock" || progress.unlockedTypes.includes(type);
+             const unlocked = true;
               const isActive = currentType === type;
               return (
                 <button
                   key={type}
-                  disabled={type !== "clock" && !unlocked}
                   onClick={() => setCurrentType(type)}
                   className={`
-                    px-8 py-4 rounded-2xl text-xl font-black transition-all duration-300 flex items-center gap-3 whitespace-nowrap
-                    ${isActive ? "bg-white text-orange-600 shadow-xl shadow-orange-100/50 ring-2 ring-orange-100" : "text-zinc-500 hover:text-zinc-900 hover:bg-white/60"}
-                    ${type !== "clock" && !unlocked ? "opacity-50 cursor-not-allowed grayscale" : ""}
-                  `}
+    px-8 py-4 rounded-2xl text-xl font-black transition-all duration-300 flex items-center gap-3 whitespace-nowrap
+    ${
+      isActive
+        ? "bg-white text-orange-600 shadow-xl shadow-orange-100/50 ring-2 ring-orange-100"
+        : "text-zinc-500 hover:text-zinc-900 hover:bg-white/60"
+    }
+  `}
                 >
                   <span>{typeTranslations[type]}</span>
-                  {type !== "clock" && !unlocked ? <Lock className="w-5 h-5" /> : null}
                 </button>
               );
             })}
@@ -495,39 +496,38 @@ const EquationGame = () => {
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 py-14 relative z-20">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-  {types.map((type) => (
-    <>
-       {type !== "clock" && (
-    <motion.div
-      key={type}
-      whileHover={{ y: -10, scale: 1.05 }}
-      className="group relative bg-white/80 backdrop-blur-xl border border-white p-8 rounded-[3rem] shadow-2xl shadow-zinc-300/40 overflow-hidden transition-all"
-    >
-      {/* Only show Trophy if type is not clock */}
-      
-        <div className="absolute -right-4 -top-4 p-5 text-orange-600 opacity-10 group-hover:opacity-20 transition-opacity">
-          <Trophy className="w-28 h-28" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+          {types.map((type) => (
+            <>
+              {type !== "clock" && (
+                <motion.div
+                  key={type}
+                  whileHover={{ y: -10, scale: 1.05 }}
+                  className="group relative bg-white/80 backdrop-blur-xl border border-white p-8 rounded-[3rem] shadow-2xl shadow-zinc-300/40 overflow-hidden transition-all"
+                >
+                  {/* Only show Trophy if type is not clock */}
+
+                  <div className="absolute -right-4 -top-4 p-5 text-orange-600 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <Trophy className="w-28 h-28" />
+                  </div>
+
+                  <p className="text-sm uppercase tracking-[0.2em] text-orange-600 font-black mb-4">
+                    {typeTranslations[type]}
+                  </p>
+
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-5xl font-black text-zinc-900 tracking-tight">
+                      {progress.points[type] || 0}
+                    </p>
+                    <span className="text-lg text-zinc-500 font-bold">
+                      نقطة
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </>
+          ))}
         </div>
-     
- 
-      <p className="text-sm uppercase tracking-[0.2em] text-orange-600 font-black mb-4">
-        {typeTranslations[type]}
-      </p>
-       
-        
-      <div className="flex items-baseline gap-2">
-        <p className="text-5xl font-black text-zinc-900 tracking-tight">
-          {progress.points[type] || 0}
-        </p>
-        <span className="text-lg text-zinc-500 font-bold">نقطة</span>
-      </div>
-     
-    </motion.div>
-      )}
-      </>
-  ))}
-</div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <AnimatePresence mode="popLayout">

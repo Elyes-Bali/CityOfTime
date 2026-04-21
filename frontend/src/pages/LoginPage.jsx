@@ -12,6 +12,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   const { login, isLoading, error } = useAuthStore();
+  
   const navigate = useNavigate();
 
 const handleLogin = async (e) => {

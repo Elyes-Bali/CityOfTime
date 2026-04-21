@@ -174,17 +174,102 @@
 //     throw new Error(`Error sending password reset success email: ${error}`);
 //   }
 // };
+// import dotenv from "dotenv";
+// dotenv.config();
+
+// import sgMail from "@sendgrid/mail"; // Import the library here
+
+// if (!process.env.SENDGRID_API_KEY) {
+//     console.error("CRITICAL ERROR: SENDGRID_API_KEY is not defined.");
+// } else {
+//     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+//     console.log("SendGrid API Key successfully loaded and set.");
+// }
+// import {
+//   PASSWORD_RESET_REQUEST_TEMPLATE,
+//   PASSWORD_RESET_SUCCESS_TEMPLATE,
+//   VERIFICATION_EMAIL_TEMPLATE,
+//   WELCOME_EMAIL_TEMPLATE,
+// } from "./emailTemplates.js";
+
+// // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// const SENDER = `"${process.env.SENDGRID_SENDER_NAME}" <${process.env.SENDGRID_VERIFIED_SENDER}>`;
+
+// export const sendVerificationEmail = async (email, verificationToken) => {
+//   const msg = {
+//     to: email,
+//     from: SENDER,
+//     subject: "Verify your email",
+//     html: VERIFICATION_EMAIL_TEMPLATE.replace("{verificationCode}", verificationToken),
+//   };
+
+//   try {
+//     await sgMail.send(msg);
+//     console.log("Verification email sent successfully via SendGrid!");
+//   } catch (error) {
+//     console.error("Error sending verification email via SendGrid:", error);
+//     throw new Error(`Error sending verification email: ${error}`);
+//   }
+// };
+
+// export const sendWelcomeEmail = async (email, name) => {
+//   const msg = {
+//     to: email,
+//     from: SENDER,
+//     subject: "Welcome to UniProfs AI",
+//     html: WELCOME_EMAIL_TEMPLATE.replace("{name}", name),
+//   };
+
+//   try {
+//     await sgMail.send(msg);
+//     console.log("Welcome email sent successfully via SendGrid!");
+//   } catch (error) {
+//     console.error("Error sending welcome email via SendGrid:", error);
+//     throw new Error(`Error sending welcome email: ${error}`);
+//   }
+// };
+
+// export const sendPasswordResetEmail = async (email, resetURL) => {
+//   const msg = {
+//     to: email,
+//     from: SENDER,
+//     subject: "Reset your password",
+//     html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetURL),
+//   };
+
+//   try {
+//     await sgMail.send(msg);
+//     console.log("Password reset email sent successfully via SendGrid!");
+//   } catch (error) {
+//     console.error("Error sending password reset email via SendGrid:", error);
+//     throw new Error(`Error sending password reset email: ${error}`);
+//   }
+// };
+
+// export const sendResetSuccessEmail = async (email) => {
+//   const msg = {
+//     to: email,
+//     from: SENDER,
+//     subject: "Password Reset Successful",
+//     html: PASSWORD_RESET_SUCCESS_TEMPLATE,
+//   };
+
+//   try {
+//     await sgMail.send(msg);
+//     console.log("Password reset success email sent successfully via SendGrid!");
+//   } catch (error) {
+//     console.error("Error sending password reset success email via SendGrid:", error);
+//     throw new Error(`Error sending password reset success email: ${error}`);
+//   }
+// };
+
+
 import dotenv from "dotenv";
 dotenv.config();
 
-import sgMail from "@sendgrid/mail"; // Import the library here
+import nodemailer from "nodemailer";
 
-if (!process.env.SENDGRID_API_KEY) {
-    console.error("CRITICAL ERROR: SENDGRID_API_KEY is not defined.");
-} else {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    console.log("SendGrid API Key successfully loaded and set.");
-}
 import {
   PASSWORD_RESET_REQUEST_TEMPLATE,
   PASSWORD_RESET_SUCCESS_TEMPLATE,
@@ -192,74 +277,88 @@ import {
   WELCOME_EMAIL_TEMPLATE,
 } from "./emailTemplates.js";
 
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// 🔹 Create Gmail transporter
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS, // App password (NOT your Gmail password)
+  },
+});
 
-const SENDER = `"${process.env.SENDGRID_SENDER_NAME}" <${process.env.SENDGRID_VERIFIED_SENDER}>`;
+// 🔹 Sender format
+const SENDER = `"Time City" <${process.env.GMAIL_USER}>`;
 
+// ✅ Send Verification Email
 export const sendVerificationEmail = async (email, verificationToken) => {
-  const msg = {
-    to: email,
-    from: SENDER,
-    subject: "Verify your email",
-    html: VERIFICATION_EMAIL_TEMPLATE.replace("{verificationCode}", verificationToken),
-  };
-
   try {
-    await sgMail.send(msg);
-    console.log("Verification email sent successfully via SendGrid!");
+    await transporter.sendMail({
+      from: SENDER,
+      to: email,
+      subject: "Verify your email",
+      html: VERIFICATION_EMAIL_TEMPLATE.replace(
+        "{verificationCode}",
+        verificationToken
+      ),
+    });
+
+    console.log("✅ Verification email sent successfully!");
   } catch (error) {
-    console.error("Error sending verification email via SendGrid:", error);
+    console.error("❌ Error sending verification email:", error);
     throw new Error(`Error sending verification email: ${error}`);
   }
 };
 
+// ✅ Send Welcome Email
 export const sendWelcomeEmail = async (email, name) => {
-  const msg = {
-    to: email,
-    from: SENDER,
-    subject: "Welcome to UniProfs AI",
-    html: WELCOME_EMAIL_TEMPLATE.replace("{name}", name),
-  };
-
   try {
-    await sgMail.send(msg);
-    console.log("Welcome email sent successfully via SendGrid!");
+    await transporter.sendMail({
+      from: SENDER,
+      to: email,
+      subject: "Welcome to Time City",
+      html: WELCOME_EMAIL_TEMPLATE.replace("{name}", name),
+    });
+
+    console.log("✅ Welcome email sent successfully!");
   } catch (error) {
-    console.error("Error sending welcome email via SendGrid:", error);
+    console.error("❌ Error sending welcome email:", error);
     throw new Error(`Error sending welcome email: ${error}`);
   }
 };
 
+// ✅ Send Password Reset Email
 export const sendPasswordResetEmail = async (email, resetURL) => {
-  const msg = {
-    to: email,
-    from: SENDER,
-    subject: "Reset your password",
-    html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetURL),
-  };
-
   try {
-    await sgMail.send(msg);
-    console.log("Password reset email sent successfully via SendGrid!");
+    await transporter.sendMail({
+      from: SENDER,
+      to: email,
+      subject: "Reset your password",
+      html: PASSWORD_RESET_REQUEST_TEMPLATE.replace(
+        "{resetURL}",
+        resetURL
+      ),
+    });
+
+    console.log("✅ Password reset email sent successfully!");
   } catch (error) {
-    console.error("Error sending password reset email via SendGrid:", error);
+    console.error("❌ Error sending password reset email:", error);
     throw new Error(`Error sending password reset email: ${error}`);
   }
 };
 
+// ✅ Send Reset Success Email
 export const sendResetSuccessEmail = async (email) => {
-  const msg = {
-    to: email,
-    from: SENDER,
-    subject: "Password Reset Successful",
-    html: PASSWORD_RESET_SUCCESS_TEMPLATE,
-  };
-
   try {
-    await sgMail.send(msg);
-    console.log("Password reset success email sent successfully via SendGrid!");
+    await transporter.sendMail({
+      from: SENDER,
+      to: email,
+      subject: "Password Reset Successful",
+      html: PASSWORD_RESET_SUCCESS_TEMPLATE,
+    });
+
+    console.log("✅ Password reset success email sent successfully!");
   } catch (error) {
-    console.error("Error sending password reset success email via SendGrid:", error);
-    throw new Error(`Error sending password reset success email: ${error}`);
+    console.error("❌ Error sending reset success email:", error);
+    throw new Error(`Error sending reset success email: ${error}`);
   }
 };
